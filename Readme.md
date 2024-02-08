@@ -1,2 +1,4 @@
-mvn package
-java -cp target/jackcompiler-1.0-SNAPSHOT.jar br.ufma.ecp.App
+Compilador baseado no projeto Nand2Tetris
+- Atualização do Analisador léxico
+Professor : Sergio Costa
+Implementado por Eduarda Silva e João Augusto
