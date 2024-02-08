@@ -12,9 +12,8 @@ public enum TokenType {
      LPAREN,RPAREN,
      LBRACE, RBRACE,
      LBRACKET,RBRACKET,
- 
      COMMA, SEMICOLON, DOT,
-    ASTERISK, SLASH,
+     ASTERISK, SLASH,
  
      AND, OR, NOT,
  
