@@ -9,7 +9,16 @@ public enum TokenType {
      // Literals.
      NUMBER,
      STRING,
-
+     LPAREN,RPAREN,
+     LBRACE, RBRACE,
+     LBRACKET,RBRACKET,
+ 
+     COMMA, SEMICOLON, DOT,
+    ASTERISK, SLASH,
+ 
+     AND, OR, NOT,
+ 
+     LT, GT, EQ,
 
      IDENT,
 
