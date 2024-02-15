@@ -4,7 +4,7 @@ Implementado por Eduarda Silva e João Augusto (@joaorty)
 <br/>
 <ul>
   <br/>
-  <li>✅ Atualização do Analisador léxico</li><
+  <li>✅ Atualização do Analisador léxico</li>
   <li>⏳ Desenvolvimento de Analisador Sintático</li>
   <li>⏳ Desenvolvimento de testes</li>
 </ul>
