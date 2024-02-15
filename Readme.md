@@ -4,6 +4,7 @@ Implementado por Eduarda Silva e João Augusto
 <br/>
 <ol>
   <br/>
-  <li>Atualização do Analisador léxico</li><br />
+  <li>Analisador léxico</li><br />
+  <li>Desenvolvimento do analisador sintático</li><br />
 </ol>
 

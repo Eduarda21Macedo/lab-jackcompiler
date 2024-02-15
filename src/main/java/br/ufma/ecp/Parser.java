@@ -3,6 +3,8 @@ package br.ufma.ecp;
 import br.ufma.ecp.token.Token;
 import br.ufma.ecp.token.TokenType;
 
+import static br.ufma.ecp.token.TokenType.*;
+
 public class Parser {
 
     private static class ParseError extends RuntimeException {}
@@ -56,6 +58,52 @@ public class Parser {
 
  
      // funções auxiliares
+     static public boolean isOperator(String op) {
+        return op!= "" && "+-*/<>=~&|".contains(op);
+     }
+
+     void parseExpression() {
+        printNonTerminal("expression");
+        parseTerm ();
+        while (isOperator(peekToken.lexeme)) {
+            expectPeek(peekToken.type);
+            parseTerm();
+        }
+        printNonTerminal("/expression");
+    }
+
+    void parseLet() {
+        printNonTerminal("letStatement");
+        expectPeek(LET);
+        expectPeek(IDENT);
+
+        if (peekTokenIs(LBRACKET)) {
+            expectPeek(LBRACKET);
+            parseExpression();
+            expectPeek(RBRACKET);
+        }
+
+        expectPeek(EQ);
+        parseExpression();
+        expectPeek(SEMICOLON);
+        printNonTerminal("/letStatement");
+    }
+
+    void parseSubroutineCall() {
+        expectPeek(IDENT);
+        expectPeek(LPAREN);
+        expectPeek(RPAREN);
+    }
+
+    public void parseDo() {
+        printNonTerminal("doStatement");
+        expectPeek(DO);
+        parseSubroutineCall();
+        expectPeek(SEMICOLON);
+        printNonTerminal("/doStatement");
+     } 
+
+
      public String XMLOutput() {
          return xmlOutput.toString();
      }
