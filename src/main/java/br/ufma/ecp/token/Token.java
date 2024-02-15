@@ -15,13 +15,13 @@ public class Token {
         var type = this.type.toString();
         String valor = lexeme;
         if (type.equals("NUMBER"))
-            type =  "intConst";
+            type =  "integerConstant";
 
         if (type.equals("STRING"))
             type =  "stringConst";
 
         if (type.equals("IDENT"))
-            type =  "identificador";
+            type =  "identifier";
 
         if (TokenType.isSymbol(lexeme.charAt(0)))
         type = "symbol";
@@ -36,12 +36,11 @@ public class Token {
             valor = "&amp;" ;
         }
 
-
         if (TokenType.isKeyword(this.type) )
             type = "keyword";
     
 
-        return "<"+ type +">" + valor + "</"+ type + ">";
+        return "<"+ type +"> " + valor + " </"+ type + ">";
     }
     
 }
