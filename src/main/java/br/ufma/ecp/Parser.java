@@ -199,6 +199,77 @@ public class Parser {
          }
          return new ParseError();
      }
+
+     void parseIf() {
+        printNonTerminal("ifStatement");
+        expectPeek(IF);
+        expectPeek(LPAREN);
+        parseExpression();
+        expectPeek(RPAREN);
+        expectPeek(LBRACE);
+        parseStatements();
+        expectPeek(RBRACE);
+        printNonTerminal("/ifStatement");
+    }
+
+    void parseStatements() {
+        printNonTerminal("statements");
+        while (peekToken.type == WHILE ||
+                peekToken.type == IF ||
+                peekToken.type == LET ||
+                peekToken.type == DO ||
+                peekToken.type == RETURN) {
+            parseStatement();
+        }
+
+        printNonTerminal("/statements");
+    }
+
+
+    void parseStatement() {
+        switch (peekToken.type) {
+            case LET:
+                parseLet();
+                break;
+            case WHILE:
+                parseWhile();
+                break;
+            case IF:
+                parseIf();
+                break;
+            case RETURN:
+                parseReturn();
+                break;
+            case DO:
+                parseDo();
+                break;
+            default:
+                throw error(peekToken, "Expected a statement");
+        }
+    }
+
+    void parseWhile() {
+    printNonTerminal("whileStatement");
+    expectPeek(WHILE);
+    expectPeek(LPAREN);
+    parseExpression();
+    expectPeek(RPAREN);
+    expectPeek(LBRACE);
+    parseStatements();
+    expectPeek(RBRACE);
+    printNonTerminal("/whileStatement");
+    }
+
+    void parseReturn() {
+        printNonTerminal("returnStatement");
+        expectPeek(RETURN);
+        if (!peekTokenIs(SEMICOLON)) {
+            parseExpression();
+        }
+        expectPeek(SEMICOLON);
+
+        printNonTerminal("/returnStatement");
+    }
  
  
  }
