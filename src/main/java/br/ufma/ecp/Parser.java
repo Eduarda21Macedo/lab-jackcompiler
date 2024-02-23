@@ -26,7 +26,7 @@ public class Parser {
  
  
      public void parse () {
-        
+        parseClass();
      }
 
      void parseTerm() {
@@ -73,7 +73,6 @@ public class Parser {
     }
 
  
-     // funções auxiliares
     static public boolean isOperator(String op) {
         return op!= "" && "+-*/<>=~&|".contains(op);
     }
@@ -270,6 +269,101 @@ public class Parser {
 
         printNonTerminal("/returnStatement");
     }
+
+    void parseSubroutineDec() {
+        printNonTerminal("subroutineDec");
+        expectPeek(CONSTRUCTOR, FUNCTION, METHOD);
+        expectPeek(VOID, INT, CHAR, BOOLEAN, IDENT);
+        expectPeek(IDENT);
+
+        expectPeek(LPAREN);
+        parseParameterList();
+        expectPeek(RPAREN);
+        parseSubroutineBody();
+
+        printNonTerminal("/subroutineDec");
+    }
+
+    void parseSubroutineBody() {
+    
+        printNonTerminal("subroutineBody");
+        expectPeek(LBRACE);
+        while (peekTokenIs(VAR)) {
+            parseVarDec();
+        }
+
+        parseStatements();
+        expectPeek(RBRACE);
+        printNonTerminal("/subroutineBody");
+    }
+
+    void parseParameterList() {
+        printNonTerminal("parameterList");
+
+        if (!peekTokenIs(RPAREN))
+        {
+            expectPeek(INT, CHAR, BOOLEAN, IDENT);
+            expectPeek(IDENT);
+        }
+
+        while (peekTokenIs(COMMA)) {
+            expectPeek(COMMA);
+            expectPeek(INT, CHAR, BOOLEAN, IDENT);
+            expectPeek(IDENT);
+        }
+
+        printNonTerminal("/parameterList");
+    }
+
+
+    void parseVarDec() {
+        printNonTerminal("varDec");
+        expectPeek(VAR);
+        expectPeek(INT, CHAR, BOOLEAN, IDENT);
+        expectPeek(IDENT);
+
+        while (peekTokenIs(COMMA)) {
+            expectPeek(COMMA);
+            expectPeek(IDENT);
+        }
+
+        expectPeek(SEMICOLON);
+        printNonTerminal("/varDec");
+    }
  
+    void parseClassVarDec() {
+        printNonTerminal("classVarDec");
+        expectPeek(FIELD, STATIC);
+        expectPeek(INT, CHAR, BOOLEAN, IDENT);
+        expectPeek(IDENT);
+
+        while (peekTokenIs(COMMA)) {
+            expectPeek(COMMA);
+            expectPeek(IDENT);
+        }
+
+        expectPeek(SEMICOLON);
+        printNonTerminal("/classVarDec");
+    }
+
+    void parseClass() {
+        printNonTerminal("class");
+        expectPeek(CLASS);
+        expectPeek(IDENT);
+        expectPeek(LBRACE);
+        
+        while (peekTokenIs(STATIC) || peekTokenIs(FIELD)) {
+            System.out.println(peekToken);
+            parseClassVarDec();
+        }
+    
+        while (peekTokenIs(FUNCTION) || peekTokenIs(CONSTRUCTOR) || peekTokenIs(METHOD)) {
+            parseSubroutineDec();
+        }
+
+        expectPeek(RBRACE);
+
+        printNonTerminal("/class");
+    }
  
  }
