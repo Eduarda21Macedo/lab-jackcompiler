@@ -26,43 +26,59 @@ public class Parser {
  
  
      public void parse () {
-         
+        
      }
 
-    void parseTerm() {
+     void parseTerm() {
         printNonTerminal("term");
         switch (peekToken.type) {
-          case NUMBER:
-            expectPeek(TokenType.NUMBER);
-            break;
-          case STRING:
-            expectPeek(TokenType.STRING);
-            break;
-          case FALSE:
-          case NULL:
-          case TRUE:
-            expectPeek(TokenType.FALSE, TokenType.NULL, TokenType.TRUE);
-            break;
-          case THIS:
-            expectPeek(TokenType.THIS);
-            break;
-          case IDENT:
-            expectPeek(TokenType.IDENT);
-            break;
-          default:
-            throw error(peekToken, "term expected");
+            case NUMBER:
+                expectPeek(NUMBER);
+                break;
+            case STRING:
+                expectPeek(STRING);
+                break;
+            case FALSE:
+            case NULL:
+            case TRUE:
+            case THIS:
+                expectPeek(FALSE, NULL, TRUE, THIS);
+                break;
+            case IDENT:
+                expectPeek(IDENT);
+                if (peekTokenIs(LPAREN) || peekTokenIs(DOT)) {
+                    parseSubroutineCall();
+                } else { 
+                    if (peekTokenIs(LBRACKET)) { 
+                        expectPeek(LBRACKET);
+                        parseExpression();
+                        expectPeek(RBRACKET);
+                    } 
+                }
+                break;
+            case LPAREN:
+                expectPeek(LPAREN);
+                parseExpression();
+                expectPeek(RPAREN);
+                break;
+            case MINUS:
+            case NOT:
+                expectPeek(MINUS, NOT);
+                parseTerm();
+                break;
+            default:
+                ;
         }
-    
         printNonTerminal("/term");
     }
 
  
      // funções auxiliares
-     static public boolean isOperator(String op) {
+    static public boolean isOperator(String op) {
         return op!= "" && "+-*/<>=~&|".contains(op);
-     }
+    }
 
-     void parseExpression() {
+    void parseExpression() {
         printNonTerminal("expression");
         parseTerm ();
         while (isOperator(peekToken.lexeme)) {
@@ -90,14 +106,39 @@ public class Parser {
     }
 
     void parseSubroutineCall() {
-        expectPeek(IDENT);
-        expectPeek(LPAREN);
-        expectPeek(RPAREN);
+        if (peekTokenIs(LPAREN)) {
+            expectPeek(LPAREN);
+            parseExpressionList();
+            expectPeek(RPAREN);
+        } else {
+            expectPeek(DOT);
+            expectPeek(IDENT);
+            expectPeek(LPAREN);
+            parseExpressionList();
+            expectPeek(RPAREN);
+        }
+    }
+
+    void parseExpressionList() {
+        printNonTerminal("expressionList");
+
+        if (!peekTokenIs(RPAREN))
+        {
+            parseExpression();
+        }
+
+        while (peekTokenIs(COMMA)) {
+            expectPeek(COMMA);
+            parseExpression();
+        }
+
+        printNonTerminal("/expressionList");
     }
 
     public void parseDo() {
         printNonTerminal("doStatement");
         expectPeek(DO);
+        expectPeek(IDENT);
         parseSubroutineCall();
         expectPeek(SEMICOLON);
         printNonTerminal("/doStatement");

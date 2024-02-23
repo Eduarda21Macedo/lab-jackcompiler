@@ -1,15 +1,8 @@
 package br.ufma.ecp;
 
 import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
 import org.junit.Test;
-
-import br.ufma.ecp.token.Token;
-import br.ufma.ecp.token.TokenType;
-
 
 
 public class ParserTest extends TestSupport {
@@ -96,6 +89,62 @@ public class ParserTest extends TestSupport {
           expectedResult = expectedResult.replaceAll("  ", "");
           assertEquals(expectedResult, result);    
 
+    }
+
+    @Test
+    public void testParseLetSimple() {
+        var input = "let string = 20;";
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parseLet();
+        System.out.println(parser.XMLOutput());
+    }
+
+    
+    @Test
+    public void testParseLet() {
+        var input = "let square = Square.new(0, 0, 30);";
+        var parser = new Parser(input.getBytes(StandardCharsets.UTF_8));
+        parser.parseLet();
+        var expectedResult =  """
+        <letStatement>
+        <keyword> let </keyword>
+        <identifier> square </identifier>
+        <symbol> = </symbol>
+        <expression>
+          <term>
+            <identifier> Square </identifier>
+            <symbol> . </symbol>
+            <identifier> new </identifier>
+            <symbol> ( </symbol>
+            <expressionList>
+              <expression>
+                <term>
+                  <integerConstant> 0 </integerConstant>
+                </term>
+              </expression>
+              <symbol> , </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 0 </integerConstant>
+                </term>
+              </expression>
+              <symbol> , </symbol>
+              <expression>
+                <term>
+                  <integerConstant> 30 </integerConstant>
+                </term>
+              </expression>
+            </expressionList>
+            <symbol> ) </symbol>
+          </term>
+        </expression>
+        <symbol> ; </symbol>
+      </letStatement>
+      """;
+        var result = parser.XMLOutput();
+        result = result.replaceAll("\r", ""); 
+        expectedResult = expectedResult.replaceAll("  ", "");
+        assertEquals(expectedResult, result);
     }
 
 }
