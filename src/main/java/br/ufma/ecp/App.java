@@ -1,7 +1,5 @@
 package br.ufma.ecp;
 
-
-
 import java.io.FileWriter;
 import java.io.IOException;
 
